@@ -47,7 +47,7 @@ const driverSchema= new mongoose.Schema({
         capacity:{
             type:Number,
             required:true,
-            minLength:[1,'capacity must be atleast 1']
+            min:[1,'capacity must be atleast 1']
         },
         vehicleType:{
             type:String,

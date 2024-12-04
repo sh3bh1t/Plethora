@@ -11,6 +11,12 @@ module.exports.registeruser = async (req, res, next) => {
     //console.log(req.body);
 
     const { fullname, email, password } = req.body;
+
+    const userAlreadyExists = await User.findOne({email});
+    if(userAlreadyExists){
+        return res.status(400).json({ message : 'user already exists'});
+    }
+
     if (!fullname || !fullname.firstname || !fullname.lastname || !email || !password) {
         return res.status(400).json({ error: "All fields are required!" });
     }
@@ -62,10 +68,10 @@ module.exports.getUserProfile= async(req,res,next)=>{
 }
 
 module.exports.logoutUser = async(req,res,next)=>{
-    res.clearCookie('token');
-    const token= req.cookies?.token || req.headers.authorization?.split(' ')[1];
-
+    const token= req.cookies?.token || (req.headers.authorization ? req.headers.authorization.split(' ')[1] : null);
     await blacklistToken.create({token});
+    res.clearCookie('token');
+
 
     res.status(200).json({message : 'logged out'});
 }
