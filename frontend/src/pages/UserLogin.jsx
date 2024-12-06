@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Link ,useNavigate , Navigate} from 'react-router-dom';
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-
+import { UserContext, UserDataContext } from '../context/UserContext.jsx';
+import axios from 'axios';
 
 const UserLogin = () => {
 
@@ -11,17 +12,31 @@ const UserLogin = () => {
   const [password,setPassword]=useState('');
   
   const[userData,setUserData]= useState({});
+  const [user, setUser] = React.useContext(UserDataContext); // Destructure as an array
+  const navigate = useNavigate();
 
 
-  const submitHandler = (e) =>{
+  const submitHandler = async(e) =>{
     e.preventDefault();
-    setUserData({
+    const userData ={
       email:email,
       password:password
-    });    
+    };  
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`,userData);
+
+    if(response.status===200){
+      const data= response.data;
+      console.log(data.user);
+      setUser(data.user);
+      localStorage.setItem('token',data.token);
+      navigate('/home');
+    }
+
     setEmail(' ');
     setPassword('');
   }
+
 
   return (
     <div className='p-7 h-screen flex flex-col justify-between'>
@@ -58,5 +73,5 @@ const UserLogin = () => {
     </div>
   )
 }
-ReactDOM.render(<Router><UserLogin /></Router>, document.getElementById('root'));
+ReactDOM.render(<Router><UserContext><UserLogin /></UserContext></Router>, document.getElementById('root'));
 export default UserLogin
