@@ -1,25 +1,39 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Link, useNavigate } from 'react-router-dom';
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-
+import { DriverContext, DriverDataContext } from '../context/DriverContext.jsx';
+import axios from 'axios';
+import { DriverLogout } from './DriverLogout.jsx';
 
 const DriverLogin = () => {
 
-  const [email,setEmail]= useState(' ');
+  const [email,setEmail]= useState('');
   const [password,setPassword]=useState('');
   
   const[driverData,setDriverData]= useState({});
+  const {driver, setDriver} = React.useContext(DriverDataContext);
 
 
-  const submitHandler = (e) =>{
+  const navigate= useNavigate();
+
+  const submitHandler = async(e) =>{
     e.preventDefault();
-    setDriverData({
+    const driverData = {
       email:email,
       password:password
-    });    
-    setEmail(' ');
+    };    
+
+    const respone = await axios.post(`${import.meta.env.VITE_BASE_URL}/driver/login`,driverData);
+    if(respone.status ===200){
+      const data = respone.data;
+      setDriver(data.driver);
+      localStorage.setItem('token',data.token);
+      navigate('/d/home');
+    }
+
+    setEmail('');
     setPassword('');
   }
 
@@ -59,5 +73,5 @@ const DriverLogin = () => {
     </div>
   )
 }
-ReactDOM.render(<Router>< DriverLogin /></Router>, document.getElementById('root'));
+ReactDOM.render(<Router><DriverContext>< DriverLogin /></DriverContext></Router>, document.getElementById('root'));
 export default DriverLogin

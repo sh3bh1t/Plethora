@@ -38,7 +38,7 @@ const UserSignup = () => {
       setUser(data.user); // Update the user context with new user data
       
       localStorage.setItem('token',data.token);
-      navigate('/home');
+      navigate('/u/home');
     }
 
     setEmail('');

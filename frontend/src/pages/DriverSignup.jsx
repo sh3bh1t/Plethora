@@ -29,14 +29,14 @@ const DriverSignup = () => {
       email,
       password,
       fullname: {
-        firstName,
-        lastName,
+        firstname:firstName,
+        lastname:lastName,
       },
-      vehicleData: {
-        vehicleColor,
-        vehiclePlate,
-        vehicleCapacity,
-        vehicleType,
+      vehicle: {
+        color:vehicleColor,
+        plate:vehiclePlate,
+        capacity:vehicleCapacity,
+        vehicleType:vehicleType,
       },
     };
 
@@ -45,7 +45,7 @@ const DriverSignup = () => {
       const data= response.data;
       setDriver(data.driver);
       localStorage.setItem('token',data.token);
-      navigate('/Driverhome')
+      navigate('/d/home')
     }
 
     // Reset form fields
@@ -154,7 +154,7 @@ const DriverSignup = () => {
         </form>
       </div>
       <div>
-        <p className='text-[10px] leading-tight'>By agreeing to continue you consent to company privacy policies and usage and agree to recive calls,texts/SMSs from company and it's affiliates</p>
+        <p className='text-[10px] leading-tight pb-2 pt-2'>By agreeing to continue you consent to company privacy policies and usage and agree to recive calls,texts/SMSs from company and it's affiliates</p>
       </div>
     </div>
   )
