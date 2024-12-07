@@ -32,7 +32,7 @@ export const UserProtectWrapper = ({ children }) => {
 
     if (isLoading) {
         return (
-          <div>Loading...</div>
+          <div>Loading... fetching data...</div>
         )
       }
     
