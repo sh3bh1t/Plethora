@@ -1,19 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faUser, faLocationDot, faMoneyBill1Wave, faStreetView } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-export const ConfirmRidePopUp = (props) => {
-    
-    const [otp,setOtp]=useState('');
-
-    const submitHandler=(e)=>{
-        e.preventDefault();
-    }
-
+export const FinishRide = (props) => {
     return (
         <div >
             <h5 className='p-3 text-center w-full absolute top-0'
-                onClick={() => props.setConfirmRidePopUpPanel(false)}
+                onClick={() => props.setFinishRidePanel(false)}
             ><FontAwesomeIcon icon={faChevronDown} /></h5>
             <h4 className='mb-2 text-lg font-medium'>Confirm Ride to start</h4>
             <div className='flex items-center justify-between mt-3 bg-gray-200 rounded-lg p-3'>
@@ -54,24 +47,8 @@ export const ConfirmRidePopUp = (props) => {
                     </div>
 
                 </div>
-
-                <div className='mt-6'>
-                    <form onSubmit={(e)=>submitHandler(e)}>
-                        <input className='bg-[#eee] px-12 py-2 text-base rounded-lg font-mono w-full mt-3'
-                        value={otp}
-                        onChange={(e)=>setOtp(e.target.value)}
-                        type="number"  
-                        placeholder='Enter OTP'/>
-                       <div className='flex gap-3 flex-row mt-6'>
-                       <Link to={'/d/riding'} className='w-1/2 bg-green-600 flex justify-center text-white font-semibold px-3 py-3 rounded-lg '>Confirm</Link>
-                        <button
-                            onClick={() => {
-                                props.setConfirmRidePopUpPanel(false)
-                                props.setRidePopUpPanel(false)
-                            }}
-                            className='w-1/2 bg-red-500 text-white font-semibold px-3 py-3 rounded-lg '>Cancel</button>
-                       </div>
-                    </form>
+                <div className=' mt-10'>
+                    <Link to={'/d/home'} className='w-full bg-green-600 flex justify-center text-white font-semibold px-3 py-3 rounded-lg '>Finish this Ride</Link>
                 </div>
             </div>
         </div>
