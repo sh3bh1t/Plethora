@@ -8,6 +8,7 @@ const cookieParser= require('cookie-parser');
 const userRoutes = require('./routes/user.routes.js');
 const driverRoutes=require('./routes/driver.routes.js');
 const mapRoutes=require('./routes/maps.routes.js');
+const rideRoutes=require('./routes/ride.routes.js');
 
 app.use(cors());
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use('/user',userRoutes);
 app.use('/driver',driverRoutes);
 app.use('/maps',mapRoutes);
+app.use('/rides',rideRoutes);
 
 const port = 8080 || process.env.PORT ;
 const mongo_uri=process.env.MONGO_URL;
