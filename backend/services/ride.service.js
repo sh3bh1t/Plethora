@@ -1,6 +1,8 @@
 const Ride = require('../models/ride.model');
 const mapService = require('./maps.service.js');
 const crypto = require('crypto');
+
+
 module.exports.getfare = async function (pickup, destination) {
     if (!pickup || !destination) {
         throw new Error('pickup and destination are required');
@@ -24,9 +26,9 @@ module.exports.getfare = async function (pickup, destination) {
         motorcycle: 1.5
     }
     const fare = {
-        auto: baseFare.auto + ((DistanceTime.distance.value / 1000) * perKmRate.auto) + ((DistanceTime.duration.value / 60) * perMinuteRate.auto),
-        car: baseFare.car + ((DistanceTime.distance.value / 1000) * perKmRate.car) + ((DistanceTime.duration.value / 60) * perMinuteRate.car),
-        motorcycle: baseFare.motorcycle + ((DistanceTime.distance.value / 1000) * perKmRate.motorcycle) + ((DistanceTime.duration.value / 60) * perMinuteRate.car),
+        auto: Math.round(baseFare.auto + ((DistanceTime.distance.value / 1000) * perKmRate.auto) + ((DistanceTime.duration.value / 60) * perMinuteRate.auto)),
+        car: Math.round(baseFare.car + ((DistanceTime.distance.value / 1000) * perKmRate.car) + ((DistanceTime.duration.value / 60) * perMinuteRate.car)),
+        motorcycle: Math.round(baseFare.motorcycle + ((DistanceTime.distance.value / 1000) * perKmRate.motorcycle) + ((DistanceTime.duration.value / 60) * perMinuteRate.car)),
     }
 
     return fare;

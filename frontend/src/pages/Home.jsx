@@ -22,6 +22,8 @@ export const Home = () => {
   const [waitingForDriver, setWaitingForDriver] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [activeField, setActiveField] = useState('pickup');
+  const [fare, setFare] = useState({});
+  const [vehicleType, setVehicleType] = useState(null);
 
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
@@ -163,9 +165,43 @@ export const Home = () => {
     }
   }, [waitingForDriver])
 
-  function findATrip() {
+  async function findATrip() {
     setVehiclePanel(true);
     setIsPanelOpen(false);
+
+    cancelToken = axios.CancelToken.source();
+
+    const token = localStorage.getItem('token');
+
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/get-fare?pickup=${pickup}&destination=${destination}`,
+      {
+        cancelToken: cancelToken.token,
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+        }
+      }
+    );
+    console.log(response.data);
+    setFare(response.data);
+  }
+
+  async function createRide() {
+
+    const token = localStorage.getItem('token');
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`,
+      {
+        pickup,
+        destination,
+        vehicleType
+      },
+      {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+        }
+      }
+    );
+    console.log(response.data);
   }
 
   return (
@@ -180,13 +216,13 @@ export const Home = () => {
         <img className='h-full w-full object-cover' src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif" alt="" />
       </div>
       <div className='flex flex-col justify-end h-screen absolute top-0 w-full '>
-        <div className='h-[30%] p-5 bg-white relative '>
+        <div className='h-[35%] p-5 bg-white relative '>
           <h4 className='absolute top-1 left-3 opacity-0' ref={panelCloseRef} onClick={() => setIsPanelOpen(false)}><FontAwesomeIcon icon={faChevronDown} /></h4>
           <h4 className='text-2xl font-semibold '> Find a trip </h4>
           <form onSubmit={(e) => submitHandler(e)}>
-            <div className='line absolute h-16 w-1 top-[45%] left-10 bg-gray-700 rounded-lg '></div>
+            <div className='line absolute h-16 w-1 top-[40%] left-10 bg-gray-700 rounded-lg '></div>
             <input
-              className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3'
+              className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-6 '
               type="text"
               value={pickup}
               required
@@ -195,7 +231,7 @@ export const Home = () => {
               placeholder='Add a Pick-up Location'
             />
             <input
-              className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3'
+              className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3 mb-5'
               type="text"
               value={destination}
               required
@@ -204,9 +240,9 @@ export const Home = () => {
               placeholder='Add Destination Location'
             />
           </form>
-          <button 
+          <button
             onClick={findATrip}
-          className="bg-black text-white w-full px-4 py-2 mt-2 rounded-lg">
+            className="bg-black text-white w-full px-4 py-2  rounded-lg">
             Find a trip
           </button>
         </div>
@@ -222,10 +258,16 @@ export const Home = () => {
         </div>
       </div>
       <div ref={vehiclePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
-        <VehiclePanel setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel} />
+        <VehiclePanel selectVehicle={setVehicleType} fare={fare} setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel} />
       </div>
       <div ref={confirmRidePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
-        <ConfirmRidePanel setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound} />
+        <ConfirmRidePanel
+          createRide={createRide}
+          pickup={pickup}
+          destination={destination}
+          fare={fare}
+          vehicleType={vehicleType}
+          setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound} />
       </div>
       <div ref={vehickeFoundRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
         <LookingForDriver setVehicleFound={setVehicleFound} />

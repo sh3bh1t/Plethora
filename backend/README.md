@@ -479,3 +479,25 @@ GET /rides/get-fare?pickup=1600+Amphitheatre+Parkway,+Mountain+View,+CA&destinat
   "message": "Error message"
 }
 ```
+
+## `/rides/get-fare` Endpoint
+
+### Description
+
+Retrieves the fare estimate for a ride between the provided pickup and destination addresses.
+
+### HTTP Method
+
+`GET`
+
+### Authentication
+
+Requires a valid JWT token in the Authorization header:
+`Authorization: Bearer <token>`
+
+### Request Parameters
+
+- `pickup` (string, required): The pickup address (minimum 3 characters).
+- `destination` (string, required): The destination address (minimum 3 characters).
+
+### Example Request
