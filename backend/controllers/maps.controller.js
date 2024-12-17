@@ -46,6 +46,7 @@ module.exports.getAutoCompleteSuggestions = async(req,res,next)=>{
     }
 
     const {input}=req.query;
+    // console.log(input);  // To check what is being sent
 
     try{
         const suggestions= await mapService.getAutoCompleteSuggestions(input);

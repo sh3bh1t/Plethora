@@ -3,13 +3,14 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faUser,faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faUser, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { Link, BrowserRouter as Router } from 'react-router-dom'
-import { LocationSearchPanel } from '../components/LocationSearchPanel'
+import { LocationSearchPanel } from '../components/LocationSearchPanel';
 import { VehiclePanel } from '../components/VehiclePanel'
 import { ConfirmRidePanel } from '../components/ConfirmRidePanel'
 import { LookingForDriver } from '../components/LookingForDriver'
 import { WaitingForDriver } from '../components/WaitingForDriver'
+import axios from 'axios';
 
 export const Home = () => {
   const [pickup, setPickup] = useState('');
@@ -19,6 +20,8 @@ export const Home = () => {
   const [confirmRidePanel, setConfirmRidePanel] = useState(false);
   const [vehicleFound, setVehicleFound] = useState(false);
   const [waitingForDriver, setWaitingForDriver] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [activeField, setActiveField] = useState('pickup');
 
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
@@ -33,6 +36,65 @@ export const Home = () => {
     setDestination('');
   }
 
+
+  let cancelToken;
+
+  const fetchSuggestions = async (input) => {
+    try {
+      if (cancelToken) {
+        cancelToken.cancel("Request canceled due to new input.");
+      }
+
+      cancelToken = axios.CancelToken.source();
+
+      const token = localStorage.getItem('token');
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestions?input=${input}`,
+        {
+          cancelToken: cancelToken.token,
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+          }
+        }
+      );
+
+      const uniqueSuggestions = response.data.filter((value, index, self) =>
+        index === self.findIndex((t) => t.description === value.description)
+      );
+
+      setSuggestions(uniqueSuggestions);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log("Request canceled", error.message);
+      } else {
+        console.error(error);
+      }
+    }
+  };
+
+
+
+
+  const handlePickupChange = (e) => {
+    setPickup(e.target.value);
+    setActiveField('pickup'); // Added
+    fetchSuggestions(e.target.value);
+  };
+
+  const handleDestinationChange = (e) => {
+    setDestination(e.target.value);
+    setActiveField('destination'); // Added
+    fetchSuggestions(e.target.value);
+  };
+
+  const handleSelectSuggestion = (suggestion) => {
+    if (activeField === 'pickup') {
+      setPickup(suggestion.description);  // Adjust this based on your data structure
+    } else {
+      setDestination(suggestion.description);
+    }
+    setIsPanelOpen(false);  // Close the suggestion panel
+  };
 
   useGSAP(function () {
     if (isPanelOpen) {
@@ -101,10 +163,14 @@ export const Home = () => {
     }
   }, [waitingForDriver])
 
+  function findATrip() {
+    setVehiclePanel(true);
+    setIsPanelOpen(false);
+  }
 
   return (
     <div className='h-screen relative'>
-     <div className='fixe flex items-center justify-between w-screen'>
+      <div className='fixe flex items-center justify-between w-screen'>
         <img className='w-12 absolute left-5 top-2' src="/images/default.png" alt="plethora_logo" />
         <Link to={'/u/logout'} className='fixed right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full'>
           <FontAwesomeIcon className='text-lg font-medium' icon={faArrowRightFromBracket} />
@@ -119,37 +185,52 @@ export const Home = () => {
           <h4 className='text-2xl font-semibold '> Find a trip </h4>
           <form onSubmit={(e) => submitHandler(e)}>
             <div className='line absolute h-16 w-1 top-[45%] left-10 bg-gray-700 rounded-lg '></div>
-            <input className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-5 '
+            <input
+              className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3'
               type="text"
               value={pickup}
               required
-              onChange={(e) => setPickup(e.target.value)}
+              onChange={handlePickupChange}
               onClick={() => setIsPanelOpen(true)}
-              placeholder='Add a Pick-up Location' />
-            <input className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3'
+              placeholder='Add a Pick-up Location'
+            />
+            <input
+              className='bg-[#eee] px-12 py-2 text-base rounded-lg w-full mt-3'
               type="text"
               value={destination}
               required
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={handleDestinationChange}
               onClick={() => setIsPanelOpen(true)}
-              placeholder='Add Destination Location' />
+              placeholder='Add Destination Location'
+            />
           </form>
+          <button 
+            onClick={findATrip}
+          className="bg-black text-white w-full px-4 py-2 mt-2 rounded-lg">
+            Find a trip
+          </button>
         </div>
         <div ref={panelRef} className=' bg-white h-0'>
-          <LocationSearchPanel setIsPanelOpen={setIsPanelOpen} setVehiclePanel={setVehiclePanel} />
+          {isPanelOpen && (
+            <LocationSearchPanel
+              suggestions={suggestions}
+              setIsPanelOpen={setIsPanelOpen}
+              setVehiclePanel={setVehiclePanel}
+              onSelect={handleSelectSuggestion}
+            />
+          )}
         </div>
-
       </div>
-      <div ref={vehiclePanelRef} className='fixed w-full  z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
+      <div ref={vehiclePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
         <VehiclePanel setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel} />
       </div>
-      <div ref={confirmRidePanelRef} className='fixed w-full  z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
+      <div ref={confirmRidePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
         <ConfirmRidePanel setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound} />
       </div>
-      <div ref={vehickeFoundRef} className='fixed w-full  z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
+      <div ref={vehickeFoundRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
         <LookingForDriver setVehicleFound={setVehicleFound} />
       </div>
-      <div ref={waitingForDriverRef} className='fixed w-full  z-10 bottom-0  bg-white px-3 py-8'>
+      <div ref={waitingForDriverRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-8'>
         <WaitingForDriver waitingForDriver={WaitingForDriver} />
       </div>
     </div>
