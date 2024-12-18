@@ -270,7 +270,13 @@ export const Home = () => {
           setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound} />
       </div>
       <div ref={vehickeFoundRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-8'>
-        <LookingForDriver setVehicleFound={setVehicleFound} />
+        <LookingForDriver
+          createRide={createRide}
+          pickup={pickup}
+          destination={destination}
+          fare={fare}
+          vehicleType={vehicleType}
+          setVehicleFound={setVehicleFound} />
       </div>
       <div ref={waitingForDriverRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-8'>
         <WaitingForDriver waitingForDriver={WaitingForDriver} />
@@ -278,5 +284,5 @@ export const Home = () => {
     </div>
   )
 }
-ReactDOM.render(<Router><Home /></Router>, document.getElementById('root'));
+// ReactDOM.render(<Router><Home /></Router>, document.getElementById('root'));
 export default Home

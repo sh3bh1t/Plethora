@@ -34,6 +34,4 @@ async function main() {
     await mongoose.connect(mongo_uri);
 }
 
-app.listen(port, () => {
-    console.log(`server is listening to port ${port}`);
-})
+module.exports = app;

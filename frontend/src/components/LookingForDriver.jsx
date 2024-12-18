@@ -14,8 +14,8 @@ export const LookingForDriver = (props) => {
             <div className='flex items-center'>
               <FontAwesomeIcon className='text-xl ml-5 mr-5' icon={faLocationDot} />
               <div>
-                <h3 className='text-lg font-medium'>562/11A</h3>
-                <p className='text-sm text-gray-600'>Third wave coffee, 80 ft Rd, Bengaluru</p>
+                <h3 className='text-lg font-medium'>Drop-off</h3>
+                <p className='text-sm text-gray-600'>{props.destination}</p>
               </div>
             </div>
           </div>
@@ -23,8 +23,8 @@ export const LookingForDriver = (props) => {
             <div className='flex items-center'>
               <FontAwesomeIcon className='text-xl ml-5 mr-5' icon={faStreetView} />
               <div>
-                <h3 className='text-lg font-medium'>562/11A</h3>
-                <p className='text-sm text-gray-600'>Third wave coffee, 80 ft Rd, Bengaluru</p>
+                <h3 className='text-lg font-medium'>Pick-up</h3>
+                <p className='text-sm text-gray-600'>{props.pickup}</p>
               </div>
             </div>
           </div>
@@ -32,7 +32,7 @@ export const LookingForDriver = (props) => {
             <div className='flex items-center'>
               <FontAwesomeIcon className='text-xl ml-5 mr-5' icon={faMoneyBill1Wave} />
               <div>
-                <h3 className='text-lg font-medium'>&#8377;193.20 </h3>
+                <h3 className='text-lg font-medium'>&#8377;{props.fare[props.vehicleType]} </h3>
                 <p className='text-sm text-gray-600'>CASH</p>
               </div>
             </div>

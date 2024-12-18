@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { UserContext } from './context/UserContext.jsx'
-import { DriverContext } from './context/DriverContext.jsx'
+import {DriverContext}  from './context/DriverContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -16,5 +16,5 @@ createRoot(document.getElementById('root')).render(
         </BrowserRouter>
       </UserContext>
     </DriverContext>
-  </StrictMode>,
+  </StrictMode>
 )

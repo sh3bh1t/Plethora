@@ -107,14 +107,14 @@ const UserSignup = () => {
 };
 
 // Wrap the UserSignup component with Router and UserContext
-ReactDOM.render(
-  <Router>
-    {/* Wrap UserSignup with the UserContext provider */}
-    <UserContext>
-      <UserSignup />
-    </UserContext>
-  </Router>,
-  document.getElementById('root')
-);
+// ReactDOM.render(
+//   <Router>
+//     {/* Wrap UserSignup with the UserContext provider */}
+//     <UserContext>
+//       <UserSignup />
+//     </UserContext>
+//   </Router>,
+//   document.getElementById('root')
+// );
 
 export default UserSignup;

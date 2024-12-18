@@ -1,30 +1,35 @@
-import React, { createContext, useContext, useState } from 'react'
-
+import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const DriverDataContext = createContext();
 
 export const DriverContext = ({ children }) => {
+    const [driver, setDriver] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [driver,setDriver] = useState(null);
-    const [isLoading, setIsLoading]= useState(false);
-    const [error,setError]=useState(null);
-
-    const updateDriver= (DriverData) =>{
-        setDriver(DriverData);
-    }
-
-    const value={
-        driver,setDriver,
-        isLoading,setIsLoading,
-        error,setError,
-        updateDriver
-    };
+    useEffect(() => {
+        const fetchDriver = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/driver/profile`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    console.log('Fetched Driver Data:', response.data);
+                    setDriver(response.data);
+                } catch (error) {
+                    console.error('Error fetching driver:', error);
+                }
+            }
+            setIsLoading(false);
+        };
+        fetchDriver();
+    }, []);
+    
 
     return (
-        <div>
-            <DriverDataContext.Provider value={value}>
-                {children}
-            </DriverDataContext.Provider>
-        </div>
-    )
-}
+        <DriverDataContext.Provider value={{ driver, setDriver, isLoading }}>
+            {children}
+        </DriverDataContext.Provider>
+    );
+};

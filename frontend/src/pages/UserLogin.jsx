@@ -73,5 +73,5 @@ const UserLogin = () => {
     </div>
   )
 }
-ReactDOM.render(<Router><UserContext><UserLogin /></UserContext></Router>, document.getElementById('root'));
+// ReactDOM.render(<Router><UserContext><UserLogin /></UserContext></Router>, document.getElementById('root'));
 export default UserLogin

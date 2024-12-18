@@ -17,5 +17,5 @@ const Start = () => {
         </div>
     )
 }
-ReactDOM.render(<Router><Start /></Router>, document.getElementById('root'));
+// ReactDOM.render(<Router><Start /></Router>, document.getElementById('root'));
 export default Start

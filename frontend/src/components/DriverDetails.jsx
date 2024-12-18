@@ -1,13 +1,25 @@
-import React from 'react'
+import React ,{useContext} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faUser, faLocationDot, faMoneyBill1Wave, faStreetView, faHouseUser, faArrowRightFromBracket, faHourglassEnd,faGaugeSimpleHigh,faClipboard } from '@fortawesome/free-solid-svg-icons';
+import { DriverDataContext } from '../context/DriverContext.jsx';
 export const DriverDetails = () => {
+    const { driver } = useContext(DriverDataContext);
+    console.log('Driver Data in Context:', driver);
+    // Handle the case where driver is null or undefined
+    if (!driver) {
+        return <p>No driver data available. Please log in.</p>;
+    }
+
     return (
         <div>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center justify-start gap-3'>
-                    <img className='h-10 w-10 rounded-full object-cover' src="https://png.pngtree.com/png-vector/20240427/ourlarge/pngtree-user-profile-account-brush-donut-shape-icon-vector-png-image_12327711.png" alt="" />
-                    <h4 className='text-lg font-medium'>Test Driver</h4>
+                    <img className='h-10 w-10 rounded-full object-cover' 
+                         src="https://png.pngtree.com/png-vector/20240427/ourlarge/pngtree-user-profile-account-brush-donut-shape-icon-vector-png-image_12327711.png" 
+                         alt="Driver Avatar" />
+                    <h4 className='text-lg font-medium'>
+                        {driver.fullname?.firstname + " " + driver.fullname?.lastname}
+                    </h4>
                 </div>
                 <div>
                     <h4 className='text-xl font-semibold'>&#8377;252.20</h4>
@@ -32,5 +44,5 @@ export const DriverDetails = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};

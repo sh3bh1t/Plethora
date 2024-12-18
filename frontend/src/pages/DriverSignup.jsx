@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Link, useNavigate } from 'react-router-dom';
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { DriverContext, DriverDataContext } from '../context/DriverContext.jsx';
+import {  DriverDataContext } from '../context/DriverContext.jsx';
 import axios from 'axios';
 
 
@@ -159,5 +159,5 @@ const DriverSignup = () => {
     </div>
   )
 }
-ReactDOM.render(<Router><DriverContext>< DriverSignup /></DriverContext></Router>, document.getElementById('root'));
+// ReactDOM.render(<Router><DriverContext>< DriverSignup /></DriverContext></Router>, document.getElementById('root'));
 export default DriverSignup

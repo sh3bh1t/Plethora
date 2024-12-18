@@ -27,7 +27,7 @@ module.exports.authUser= async(req,res,next)=>{
 
         req.user=user;
 
-        return next();
+        next();
     }
     catch(err){
         return res.status(401).json({message : ' unauthorized'});
@@ -59,7 +59,7 @@ module.exports.authDriver= async(req,res,next)=>{
 
         req.driver=driver;
 
-        return next();
+        next();
     }
     catch(err){
         console.log(err);
