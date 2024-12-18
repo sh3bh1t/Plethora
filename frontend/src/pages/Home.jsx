@@ -14,6 +14,7 @@ import { WaitingForDriver } from '../components/WaitingForDriver'
 import { SocketContext } from '../context/SocketContext'
 import { UserDataContext } from '../context/UserContext'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'
 
 export const Home = () => {
   const [pickup, setPickup] = useState('');
@@ -27,8 +28,9 @@ export const Home = () => {
   const [activeField, setActiveField] = useState('pickup');
   const [fare, setFare] = useState({});
   const [vehicleType, setVehicleType] = useState(null);
+  const [ride, setRide] = useState(null);
 
-  const {socket} = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
   const [user] = useContext(UserDataContext);
 
   const panelRef = useRef(null);
@@ -37,6 +39,7 @@ export const Home = () => {
   const confirmRidePanelRef = useRef(null);
   const vehickeFoundRef = useRef(null);
   const waitingForDriverRef = useRef(null);
+  const navigate = useNavigate();
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -48,9 +51,20 @@ export const Home = () => {
   let cancelToken;
 
   useEffect(() => {
-    socket.emit("join", {userType : "user" , userId : user._id}) 
-  } , [user])
+    socket.emit("join", { userType: "user", userId: user._id })
+  }, [user])
 
+
+  socket.on('ride-confirmed', ride => {
+    setVehicleFound(false);
+    setWaitingForDriver(true);
+    setRide(ride);
+  })
+
+  socket.on('ride-started', ride => {
+    setWaitingForDriver(false);
+    navigate('/riding')
+  })
 
   const fetchSuggestions = async (input) => {
     try {
@@ -176,7 +190,7 @@ export const Home = () => {
     }
   }, [waitingForDriver])
 
-  
+
 
   async function findATrip() {
     setVehiclePanel(true);
@@ -292,7 +306,11 @@ export const Home = () => {
           setVehicleFound={setVehicleFound} />
       </div>
       <div ref={waitingForDriverRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-8'>
-        <WaitingForDriver waitingForDriver={WaitingForDriver} />
+        <WaitingForDriver
+          ride={ride}
+          setWaitingForDriver={setWaitingForDriver}
+          setVehicleFound={setVehicleFound}
+          waitingForDriver={WaitingForDriver} />
       </div>
     </div>
   )

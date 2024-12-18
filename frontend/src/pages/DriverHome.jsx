@@ -10,6 +10,7 @@ import { ConfirmRidePopUp } from '../components/ConfirmRidePopUp';
 import { SocketContext } from '../context/SocketContext';
 import { useEffect, useContext } from 'react';
 import { DriverDataContext } from '../context/DriverContext';
+import axios from 'axios';
 export const DriverHome = () => {
 
   const [ridePopUpPanel, setRidePopUpPanel] = useState(false);
@@ -54,6 +55,19 @@ export const DriverHome = () => {
     setRidePopUpPanel(true);
   })
 
+  async function confirmRide() {
+
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm`, {
+      rideId: ride._id,
+      driverId: driver._id,
+    },{headers:{
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }})
+
+    setRidePopUpPanel(false);
+    setConfirmRidePopUpPanel(true);
+  }
+
   useGSAP(function () {
     if (ridePopUpPanel) {
       gsap.to(ridePopUpPanelRef.current, {
@@ -95,12 +109,15 @@ export const DriverHome = () => {
       </div>
       <div ref={ridePopUpPanelRef} className='fixed w-full z-10 translate-y-full bottom-0  bg-white px-3 py-10 pt-12'>
         <RidePopUp
-         ride={ride}
-        setRidePopUpPanel={setRidePopUpPanel}
-         setConfirmRidePopUpPanel={setConfirmRidePopUpPanel} />
+          ride={ride}
+          setRidePopUpPanel={setRidePopUpPanel}
+          setConfirmRidePopUpPanel={setConfirmRidePopUpPanel} 
+          confirmRide={confirmRide} />
       </div>
-      <div ref={confirmRidePopUpPanelRef} className='fixed h-[90%] w-full z-10 translate-y-full bottom-0  bg-white px-3 py-10 pt-12'>
-        <ConfirmRidePopUp setConfirmRidePopUpPanel={setConfirmRidePopUpPanel} setRidePopUpPanel={setRidePopUpPanel} />
+      <div ref={confirmRidePopUpPanelRef} className='fixed h-[95%] w-full z-10 translate-y-full bottom-0  bg-white px-3 py-10 pt-12'>
+        <ConfirmRidePopUp
+        ride={ride}
+        setConfirmRidePopUpPanel={setConfirmRidePopUpPanel} setRidePopUpPanel={setRidePopUpPanel} />
       </div>
     </div>
   )

@@ -50,3 +50,45 @@ module.exports.getFare = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 }
+
+
+module.exports.confirmRide = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { rideId } = req.body;
+    try {
+        const ride = await rideSerive.confirmRide(rideId, req.driver);
+        console.log('Driver in Request:', req.driver);
+
+        sendMessageToSocketId(ride.user.socketId,{
+            event:'ride-confirmed',
+            data:ride
+        })
+
+        res.status(200).json(ride);
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ message: err.message });
+    }
+}
+
+
+module.exports.startRide = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { rideId, otp } = req.query;
+    try {
+        const ride = await rideSerive.startRide(rideId, otp , req.driver);
+        sendMessageToSocketId(ride.user.socketId,{
+            event:'ride-started',
+            data:ride
+        })
+        res.status(200).json(ride);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}

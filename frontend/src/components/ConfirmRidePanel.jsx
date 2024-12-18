@@ -32,7 +32,7 @@ export const ConfirmRidePanel = (props) => {
             <div className='flex items-center'>
               <FontAwesomeIcon className='text-xl ml-5 mr-5' icon={faMoneyBill1Wave} />
               <div>
-                <h3 className='text-lg font-medium'>&#8377;{props.fare[props.vehicleTypes]} </h3>
+                <h3 className='text-lg font-medium'>&#8377;{props.fare[props.vehicleType]} </h3>
                 <p className='text-sm text-gray-600'>CASH</p>
               </div>
             </div>

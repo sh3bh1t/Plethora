@@ -51,13 +51,16 @@ module.exports.authDriver= async(req,res,next)=>{
     // console.log(isBlackListed);
     try{
         const decoded= jwt.verify(token,process.env.JWT_SECRET);
+        
+        console.log('Decoded Token:', decoded);
+
         const driver= await Driver.findById(decoded._id);
 
         if (!driver) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Driver not found' });
         }
-
         req.driver=driver;
+        console.log('Authenticated Driver:', req.driver);
 
         next();
     }
