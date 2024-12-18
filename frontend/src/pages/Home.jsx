@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
+import { useContext } from 'react'
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faUser, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +11,8 @@ import { VehiclePanel } from '../components/VehiclePanel'
 import { ConfirmRidePanel } from '../components/ConfirmRidePanel'
 import { LookingForDriver } from '../components/LookingForDriver'
 import { WaitingForDriver } from '../components/WaitingForDriver'
+import { SocketContext } from '../context/SocketContext'
+import { UserDataContext } from '../context/UserContext'
 import axios from 'axios';
 
 export const Home = () => {
@@ -24,6 +27,9 @@ export const Home = () => {
   const [activeField, setActiveField] = useState('pickup');
   const [fare, setFare] = useState({});
   const [vehicleType, setVehicleType] = useState(null);
+
+  const {socket} = useContext(SocketContext);
+  const [user] = useContext(UserDataContext);
 
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
@@ -40,6 +46,11 @@ export const Home = () => {
 
 
   let cancelToken;
+
+  useEffect(() => {
+    socket.emit("join", {userType : "user" , userId : user._id}) 
+  } , [user])
+
 
   const fetchSuggestions = async (input) => {
     try {
@@ -164,6 +175,8 @@ export const Home = () => {
       })
     }
   }, [waitingForDriver])
+
+  
 
   async function findATrip() {
     setVehiclePanel(true);

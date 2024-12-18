@@ -17,6 +17,7 @@ function initializeSocket(server) {
 
         socket.on('join', async(data) => {
             const {userId,userType}=data;
+            console.log('User joined:', userId, userType);
             if(userType==='user'){
                 await User.findByIdAndUpdate(userId,{
                     socketId:socket.id});
@@ -25,15 +26,28 @@ function initializeSocket(server) {
                     socketId:socket.id});
             }
         });
+
+        socket.on('update-location-driver', async(data) => {
+            const { userId, location } = data;
+            if ( !userId || !location || !location.ltd  || !location.lng ) {
+                return socket.emit('error', {message : 'Invalid location data'});
+            }
+            // console.log('User location updated:', userId, location);
+                await Driver.findByIdAndUpdate(userId, {location:{
+                    ltd:location.ltd,
+                    lng:location.lng
+                }});
+        });
+
         socket.on('disconnect', () => {
             console.log('Client disconnected:', socket.id);
         });
     });
 }
 
-function sendMessageToSocketId(socketId, message) {
+function sendMessageToSocketId(socketId, messageObject) {
     if (io) {
-        io.to(socketId).emit('message', message);
+        io.to(socketId).emit(messageObject.event, messageObject.data);
     }
 }
 

@@ -1,5 +1,5 @@
 const axios = require('axios');
-
+const Driver = require('../models/driver.model.js');
 module.exports.getAddressCoordinate = async (address) => {
     const apiKey = process.env.GOOGLE_MAPS_API;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
@@ -62,3 +62,13 @@ module.exports.getAutoCompleteSuggestions = async(input)=>{
     }
 }
 
+module.exports.getDriversInRadius = async(ltd,lng,radius)=>{
+    const drivers = await Driver.find({
+        location:{
+            $geoWithin:{
+                $centerSphere:[[ltd,lng],radius/6378.1]
+            }
+        }
+    });
+    return drivers;
+}

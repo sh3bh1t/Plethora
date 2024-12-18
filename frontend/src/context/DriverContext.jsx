@@ -17,6 +17,7 @@ export const DriverContext = ({ children }) => {
                     });
                     console.log('Fetched Driver Data:', response.data);
                     setDriver(response.data);
+                    // console.log("logged in driver :", response.data);
                 } catch (error) {
                     console.error('Error fetching driver:', error);
                 }

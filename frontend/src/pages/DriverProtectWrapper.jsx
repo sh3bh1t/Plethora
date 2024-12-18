@@ -21,7 +21,7 @@ export const DriverProtectWrapper = ({ children }) => {
     })
       .then((response) => {
         if (response.status === 200) {
-          setDriver(response.data.driver);
+          setDriver(response.data);
           setIsLoading(false);
         }
       })
