@@ -15,6 +15,7 @@ import { SocketContext } from '../context/SocketContext'
 import { UserDataContext } from '../context/UserContext'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'
+import { LiveTracking } from '../components/LiveTracking'
 
 export const Home = () => {
   const [pickup, setPickup] = useState('');
@@ -63,7 +64,7 @@ export const Home = () => {
 
   socket.on('ride-started', ride => {
     setWaitingForDriver(false);
-    navigate('/riding')
+    navigate('/riding',{state:{ride}})
   })
 
   const fetchSuggestions = async (input) => {
@@ -234,13 +235,13 @@ export const Home = () => {
   return (
     <div className='h-screen relative'>
       <div className='fixe flex items-center justify-between w-screen'>
-        <img className='w-12 absolute left-5 top-2' src="/images/default.png" alt="plethora_logo" />
+        <img className='w-12 absolute left-5 top-2 ' src="/images/default.png" alt="plethora_logo" />
         <Link to={'/u/logout'} className='fixed right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full'>
           <FontAwesomeIcon className='text-lg font-medium' icon={faArrowRightFromBracket} />
         </Link>
       </div>
-      <div className='h-screen w-screen'>
-        <img className='h-full w-full object-cover' src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif" alt="" />
+      <div className='h-screen w-screen fixed top-0 z-[-1] '>
+        <LiveTracking/>
       </div>
       <div className='flex flex-col justify-end h-screen absolute top-0 w-full '>
         <div className='h-[35%] p-5 bg-white relative '>

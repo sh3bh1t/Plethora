@@ -20,7 +20,7 @@ export const ConfirmRidePopUp = (props) => {
         setOtp('');
         props.setConfirmRidePopUpPanel(false);
         props.setRidePopUpPanel(false);
-        navigate('/d/riding');
+        navigate('/d/riding',{state:{ride:props.ride}});
     }
 
 

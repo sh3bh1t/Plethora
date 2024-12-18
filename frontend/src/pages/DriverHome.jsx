@@ -11,6 +11,7 @@ import { SocketContext } from '../context/SocketContext';
 import { useEffect, useContext } from 'react';
 import { DriverDataContext } from '../context/DriverContext';
 import axios from 'axios';
+import { LiveTracking } from '../components/LiveTracking';
 export const DriverHome = () => {
 
   const [ridePopUpPanel, setRidePopUpPanel] = useState(false);
@@ -96,13 +97,13 @@ export const DriverHome = () => {
   return (
     <div className='h-screen'>
       <div className='fixe flex items-center justify-between w-screen'>
-        <img className='w-12 absolute left-5 top-2' src="/images/default.png" alt="plethora_logo" />
+        <img className='w-12 absolute left-5 top-2 z-10' src="/images/default.png" alt="plethora_logo" />
         <Link to={'/d/logout'} className='fixed right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full'>
-          <FontAwesomeIcon className='text-lg font-medium' icon={faArrowRightFromBracket} />
+          <FontAwesomeIcon className='text-lg font-medium z-10' icon={faArrowRightFromBracket} />
         </Link>
       </div>
-      <div className='h-3/5'>
-        <img className='h-full w-full object-cover' src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif" alt="" />
+      <div className='h-3/5 z-[-1]'>
+        <LiveTracking/>
       </div>
       <div className='h-2/5 p-4'>
         <DriverDetails />

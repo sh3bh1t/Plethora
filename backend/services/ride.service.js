@@ -96,3 +96,20 @@ module.exports.startRide = async (rideId, otp , captain) => {
     })
     return ride;
 }
+
+
+module.exports.endRide = async (rideId, driver) => {
+    if (!rideId || !driver) {
+        throw new Error('rideId and driver are required');
+    }
+
+    const ride = await Ride.findOne({ _id: rideId ,driver : driver._id}).populate('user').populate('driver').select('+otp')
+
+    if (!ride) {
+        throw new Error('Ride not found');
+    }
+
+    await Ride.findOneAndUpdate({ _id: rideId }, { status: 'completed'});
+
+    return ride;
+}
