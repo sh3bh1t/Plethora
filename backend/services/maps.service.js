@@ -48,6 +48,7 @@ module.exports.getAutoCompleteSuggestions = async(input)=>{
     }
 
     const apiKey= process.env.GOOGLE_MAPS_API;
+    //console.log('Using API KEY:', apiKey);
     const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&key=${apiKey}`;
     try{
         const response = await axios.get(url);
